@@ -9,7 +9,7 @@
     "author": "Netology",
     "license": "ISC",
     "engines": {
-        "node": ">=16.0.0 <22.0.0"
+        "node": "20.x"
     },
     "type": "module",
     "dependencies": {
