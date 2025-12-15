@@ -10,7 +10,7 @@ import {
     setLoading,
 } from './ui.js';
 
-const api = new HelpDeskApi(); // <-- ВАЖНО
+const api = new HelpDeskApi();
 
 const ticketsEl = document.getElementById('tickets');
 const addTicketBtn = document.getElementById('addTicketBtn');
@@ -168,9 +168,8 @@ ticketsEl.addEventListener('click', async (e) => {
 
     if (e.target.closest('[data-role="open"]')) {
         const descEl = li.querySelector('[data-role="desc"]');
-        const isHidden = descEl.classList.contains('hidden');
 
-        if (!isHidden) {
+        if (!descEl.classList.contains('hidden')) {
             descEl.classList.add('hidden');
             descEl.textContent = '';
             return;

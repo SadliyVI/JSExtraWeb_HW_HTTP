@@ -7,11 +7,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use((req, res, next) => {
-    console.log("INCOMING", req.method, req.url);
-    next();
-});
-
 app.get("/health", (req, res) => {
     res.status(200).json({ ok: true });
 });
@@ -27,7 +22,7 @@ let tickets = [
     {
         id: crypto.randomUUID(),
         name: "Переустановить Windows, PC-Hall24",
-        description: "",
+        description: "Задача переустановки Windows включает несколько этапов: подготовку (резервное копирование данных), создание установочного носителя (загрузочной флешки), настройку BIOS/UEFI для загрузки с него, установку самой системы (форматирование диска и копирование файлов) и постобработку (установка драйверов, программ)",
         status: false,
         created: Date.now(),
     },
@@ -42,7 +37,6 @@ let tickets = [
 
 app.all("/", (req, res) => {
     const { method, id } = req.query;
-    console.log("API", method, id);
 
     switch (method) {
         case "allTickets":
@@ -73,6 +67,7 @@ app.all("/", (req, res) => {
         case "deleteById": {
             const ticket = tickets.find((t) => t.id === id);
             if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+
             tickets = tickets.filter((t) => t.id !== id);
             return res.status(204).end();
         }
@@ -86,7 +81,7 @@ app.all("/", (req, res) => {
         }
 
         default:
-            // Чтобы Render/браузер не получали 404 на "/"
+            // чтобы healthcheck на "/" не получал 404
             if (!method) return res.status(200).json({ status: "ok" });
             return res.status(400).json({ message: "Unknown method", method });
     }
@@ -97,9 +92,13 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
+    // eslint-disable-next-line no-console
     console.error("UNHANDLED ERROR:", err);
     res.status(500).json({ error: "Internal Server Error" });
 });
 
 const port = process.env.PORT || 7070;
-app.listen(port, () => console.log("Server started on port", port));
+app.listen(port, () => {
+    // eslint-disable-next-line no-console
+    console.log(`Server started on port ${port}`);
+});

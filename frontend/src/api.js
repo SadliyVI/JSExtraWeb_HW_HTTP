@@ -42,25 +42,21 @@ export class HelpDeskApi {
     allTickets() {
         return this.request(this.url({ method: 'allTickets' }));
     }
-
     ticketById(id) {
         return this.request(this.url({ method: 'ticketById', id }));
     }
-
     createTicket({ name, description }) {
         return this.request(this.url({ method: 'createTicket' }), {
             method: 'POST',
             body: { id: null, name, description, status: false },
         });
     }
-
     updateById(id, patch) {
         return this.request(this.url({ method: 'updateById', id }), {
             method: 'POST',
             body: patch,
         });
     }
-
     deleteById(id) {
         return this.request(this.url({ method: 'deleteById', id }));
     }
