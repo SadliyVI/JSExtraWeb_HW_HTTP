@@ -2,12 +2,14 @@
 
 ## Тема: Работа с HTTP
 
-### HelpDesk
+### HelpDesk (frontend + backend)
 
 Реализация фронтенда для сервиса управления заявками
 
-![Build](https://github.com/SadliyVI/JSExtraWeb_HW_HTTP/actions/workflows/main.yml/badge.svg)
+![Deploy](https://github.com/SadliyVI/JSExtraWeb_HW_HTTP/actions/workflows/main.yml/badge.svg)
 
 ### 🚀 Демо
 
 [Live demo](https://sadliyvi.github.io/JSExtraWeb_HW_HTTP/)
+
+<http://localhost:7070>
