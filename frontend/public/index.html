@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>HelpDesk</title>
+</head>
+
+<body>
+    <div class="app">
+        <header class="header">
+            <h1 class="title">HelpDesk</h1>
+            <button class="btn btn-primary" id="addTicketBtn">Добавить тикет</button>
+        </header>
+
+        <main>
+            <div class="loader hidden" id="loader">
+                <img id="loaderImg" alt="loading" />
+                <div class="loader-text">Загрузка...</div>
+            </div>
+
+            <ul class="tickets" id="tickets"></ul>
+        </main>
+    </div>
+
+    <div class="backdrop hidden" id="backdrop"></div>
+
+    <div class="modal hidden" id="modal"></div>
+</body>
+
+</html>
