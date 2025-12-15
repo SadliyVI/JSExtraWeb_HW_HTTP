@@ -11,5 +11,3 @@
 ### 🚀 Демо
 
 [Live demo](https://sadliyvi.github.io/JSExtraWeb_HW_HTTP/)
-
-<http://localhost:7070>
