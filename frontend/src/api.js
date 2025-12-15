@@ -6,7 +6,7 @@ export class HelpDeskApi {
     }
 
     url(params) {
-        const u = new URL(this.baseUrl);
+        const u = new URL(this.baseUrl.endsWith('/') ? this.baseUrl : this.baseUrl + '/');
         Object.entries(params).forEach(([k, v]) => u.searchParams.set(k, v));
         return u.toString();
     }

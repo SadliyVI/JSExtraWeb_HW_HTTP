@@ -10,7 +10,7 @@ import {
     setLoading,
 } from './ui.js';
 
-const api = new HelpDeskApi(import.meta.env?.VITE_API_URL ?? 'http://localhost:7070');
+const api = new HelpDeskApi();
 
 const ticketsEl = document.getElementById('tickets');
 const addTicketBtn = document.getElementById('addTicketBtn');
