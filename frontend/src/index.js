@@ -21,7 +21,7 @@ const modalEl = document.getElementById('modal');
 
 loaderImg.src = spinnerUrl;
 
-let cache = []; // текущий список из allTickets
+let cache = [];
 
 async function refreshTickets() {
     setLoading(loaderEl, true);
@@ -84,7 +84,6 @@ ticketsEl.addEventListener('click', async (e) => {
     const id = li.dataset.id;
     const role = e.target?.dataset?.role;
 
-    // 1) toggle status
     if (role === 'toggle') {
         const checked = e.target.checked;
         setLoading(loaderEl, true);
@@ -100,7 +99,6 @@ ticketsEl.addEventListener('click', async (e) => {
         return;
     }
 
-    // 2) edit
     if (role === 'edit') {
         const t = findTicket(id);
         openModal(
@@ -166,7 +164,6 @@ ticketsEl.addEventListener('click', async (e) => {
         return;
     }
 
-    // 4) open details (click on body, not buttons)
     const openClicked = e.target.closest('[data-role="open"]');
     if (openClicked) {
         const descEl = li.querySelector('[data-role="desc"]');

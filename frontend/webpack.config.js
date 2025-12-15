@@ -6,7 +6,6 @@ import webpack from 'webpack';
 export default (env, argv) => {
     const isProd = argv.mode === 'production';
 
-    // берём из env.API_URL при сборке (GitHub Actions), иначе localhost
     const API_URL = env?.API_URL || 'http://localhost:7070';
 
     return {
