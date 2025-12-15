@@ -27,9 +27,9 @@ export default (env, argv) => {
         plugins: [
             new HtmlWebpackPlugin({ template: './public/index.html' }),
             new webpack.DefinePlugin({
-                __API_URL__: JSON.stringify(API_URL),
+                __API_URL__: JSON.stringify(API_URL || 'http://localhost:7070'),
             }),
             ...(isProd ? [new MiniCssExtractPlugin()] : []),
         ],
-    };
+    }
 };
