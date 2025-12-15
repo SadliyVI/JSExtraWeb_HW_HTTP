@@ -30,15 +30,6 @@ jobs:
         working-directory: frontend
         run: npm ci
 
-      - name: Debug API_URL presence
-        run: |
-          if [ -z "${{ secrets.API_URL }}" ]; then
-            echo "API_URL secret is EMPTY or NOT AVAILABLE"
-            exit 1
-          else
-            echo "API_URL secret is set"
-          fi
-
       - name: Build frontend
         working-directory: frontend
         env:
@@ -48,7 +39,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          name: pages-frontend
+          name: pages-frontend-${{ github.run_id }}
           path: frontend/dist
 
   deploy:
@@ -56,9 +47,8 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
         with:
-          artifact_name: pages-frontend
+          artifact_name: pages-frontend-${{ github.run_id }}

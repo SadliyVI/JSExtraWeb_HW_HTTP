@@ -12,7 +12,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get("/health", (req, res) => res.json({ ok: true }));
+app.get("/health", (req, res) => {
+    res.status(200).json({ ok: true });
+});
 
 let tickets = [
     {
@@ -40,17 +42,16 @@ let tickets = [
 
 app.all("/", (req, res) => {
     const { method, id } = req.query;
-
     console.log("API", method, id);
 
     switch (method) {
         case "allTickets":
-            return res.json(tickets);
+            return res.status(200).json(tickets);
 
         case "ticketById": {
             const ticket = tickets.find((t) => t.id === id);
             if (!ticket) return res.status(404).json({ message: "Ticket not found" });
-            return res.json(ticket);
+            return res.status(200).json(ticket);
         }
 
         case "createTicket": {
@@ -64,8 +65,9 @@ app.all("/", (req, res) => {
                 description,
                 created: Date.now(),
             };
+
             tickets.push(newTicket);
-            return res.json(newTicket);
+            return res.status(200).json(newTicket);
         }
 
         case "deleteById": {
@@ -78,18 +80,24 @@ app.all("/", (req, res) => {
         case "updateById": {
             const ticket = tickets.find((t) => t.id === id);
             if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+
             Object.assign(ticket, req.body);
-            return res.json(tickets);
+            return res.status(200).json(tickets);
         }
 
         default:
-            if (!method) return res.json({ status: "ok" });
+            // Чтобы Render/браузер не получали 404 на "/"
+            if (!method) return res.status(200).json({ status: "ok" });
             return res.status(400).json({ message: "Unknown method", method });
     }
 });
 
+app.use((req, res) => {
+    res.status(404).json({ message: "Not found" });
+});
+
 app.use((err, req, res, next) => {
-    console.error("UNHANDLED ERROR", err);
+    console.error("UNHANDLED ERROR:", err);
     res.status(500).json({ error: "Internal Server Error" });
 });
 

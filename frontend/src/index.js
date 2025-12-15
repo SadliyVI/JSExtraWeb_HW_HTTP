@@ -10,7 +10,7 @@ import {
     setLoading,
 } from './ui.js';
 
-const api = new HelpDeskApi();
+const api = new HelpDeskApi(); // <-- ВАЖНО
 
 const ticketsEl = document.getElementById('tickets');
 const addTicketBtn = document.getElementById('addTicketBtn');
@@ -40,17 +40,17 @@ function findTicket(id) {
 }
 
 function bindModalCommon() {
-    modalEl.addEventListener('click', (e) => {
-        if (e.target?.dataset?.role === 'cancel') closeModal(backdropEl, modalEl);
-    }, { once: true });
+    modalEl.addEventListener(
+        'click',
+        (e) => {
+            if (e.target?.dataset?.role === 'cancel') closeModal(backdropEl, modalEl);
+        },
+        { once: true },
+    );
 }
 
 addTicketBtn.addEventListener('click', () => {
-    openModal(
-        backdropEl,
-        modalEl,
-        addEditModalTemplate({ title: 'Добавить тикет', submitText: 'Ок' }),
-    );
+    openModal(backdropEl, modalEl, addEditModalTemplate({ title: 'Добавить тикет', submitText: 'Ок' }));
     bindModalCommon();
 
     const form = modalEl.querySelector('#ticketForm');
@@ -59,7 +59,6 @@ addTicketBtn.addEventListener('click', () => {
         const fd = new FormData(form);
         const name = String(fd.get('name') ?? '').trim();
         const description = String(fd.get('description') ?? '').trim();
-
         if (!name) return;
 
         setLoading(loaderEl, true);
@@ -92,7 +91,7 @@ ticketsEl.addEventListener('click', async (e) => {
             await refreshTickets();
         } catch (err) {
             alert(`Ошибка обновления: ${err.message}`);
-            e.target.checked = !checked; // откат UI
+            e.target.checked = !checked;
         } finally {
             setLoading(loaderEl, false);
         }
@@ -135,7 +134,6 @@ ticketsEl.addEventListener('click', async (e) => {
         return;
     }
 
-    // 3) delete
     if (role === 'delete') {
         openModal(
             backdropEl,
@@ -148,24 +146,27 @@ ticketsEl.addEventListener('click', async (e) => {
         bindModalCommon();
 
         const okBtn = modalEl.querySelector('[data-role="confirm"]');
-        okBtn.addEventListener('click', async () => {
-            setLoading(loaderEl, true);
-            try {
-                await api.deleteById(id);
-                closeModal(backdropEl, modalEl);
-                await refreshTickets();
-            } catch (err) {
-                alert(`Ошибка удаления: ${err.message}`);
-            } finally {
-                setLoading(loaderEl, false);
-            }
-        }, { once: true });
+        okBtn.addEventListener(
+            'click',
+            async () => {
+                setLoading(loaderEl, true);
+                try {
+                    await api.deleteById(id);
+                    closeModal(backdropEl, modalEl);
+                    await refreshTickets();
+                } catch (err) {
+                    alert(`Ошибка удаления: ${err.message}`);
+                } finally {
+                    setLoading(loaderEl, false);
+                }
+            },
+            { once: true },
+        );
 
         return;
     }
 
-    const openClicked = e.target.closest('[data-role="open"]');
-    if (openClicked) {
+    if (e.target.closest('[data-role="open"]')) {
         const descEl = li.querySelector('[data-role="desc"]');
         const isHidden = descEl.classList.contains('hidden');
 

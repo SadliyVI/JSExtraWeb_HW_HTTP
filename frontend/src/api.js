@@ -1,12 +1,15 @@
-const DEFAULT_BASE_URL = typeof __API_URL__ !== 'undefined' ? __API_URL__ : 'http://localhost:7070';
+const DEFAULT_BASE_URL =
+    typeof __API_URL__ !== 'undefined' && __API_URL__
+        ? __API_URL__
+        : 'http://localhost:7070';
 
 export class HelpDeskApi {
     constructor(baseUrl = DEFAULT_BASE_URL) {
-        this.baseUrl = baseUrl;
+        this.baseUrl = String(baseUrl).replace(/\/+$/, '');
     }
 
     url(params) {
-        const u = new URL(this.baseUrl.endsWith('/') ? this.baseUrl : this.baseUrl + '/');
+        const u = new URL(this.baseUrl + '/');
         Object.entries(params).forEach(([k, v]) => u.searchParams.set(k, v));
         return u.toString();
     }
@@ -39,21 +42,25 @@ export class HelpDeskApi {
     allTickets() {
         return this.request(this.url({ method: 'allTickets' }));
     }
+
     ticketById(id) {
         return this.request(this.url({ method: 'ticketById', id }));
     }
+
     createTicket({ name, description }) {
         return this.request(this.url({ method: 'createTicket' }), {
             method: 'POST',
             body: { id: null, name, description, status: false },
         });
     }
+
     updateById(id, patch) {
         return this.request(this.url({ method: 'updateById', id }), {
             method: 'POST',
             body: patch,
         });
     }
+
     deleteById(id) {
         return this.request(this.url({ method: 'deleteById', id }));
     }

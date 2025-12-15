@@ -5,7 +5,6 @@ import webpack from 'webpack';
 
 export default (env, argv) => {
     const isProd = argv.mode === 'production';
-
     const API_URL = env?.API_URL || 'http://localhost:7070';
 
     return {
