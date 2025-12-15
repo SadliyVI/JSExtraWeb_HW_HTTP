@@ -8,12 +8,14 @@ const app = express();
 const logger = pino(pinoPretty());
 
 app.use(cors());
-app.use(express.json()); // <-- ВАЖНО
+app.use(express.json());
 
-app.get("/", (req, res, next) => {
-    if (!req.query.method) return res.status(200).json({ status: "ok" });
+app.use((req, res, next) => {
+    logger.info({ method: req.method, url: req.url, ct: req.headers["content-type"] }, "incoming");
     next();
 });
+
+app.get("/health", (req, res) => res.json({ ok: true }));
 
 let tickets = [
     {
@@ -39,54 +41,56 @@ let tickets = [
     },
 ];
 
-app.all("/", (request, response) => {
-    const { method, id } = request.query;
+app.all("*", (req, res) => {
+    const { method, id } = req.query;
 
     switch (method) {
         case "allTickets":
-            logger.info("allTickets");
-            return response.json(tickets);
+            return res.json(tickets);
 
         case "ticketById": {
             const ticket = tickets.find((t) => t.id === id);
-            if (!ticket) return response.status(404).json({ message: "Ticket not found" });
-            return response.json(ticket);
+            if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+            return res.json(ticket);
         }
 
         case "createTicket": {
-            const createData = request.body || {};
+            const { name, description = "" } = req.body || {};
+            if (!name) return res.status(400).json({ message: "name is required" });
+
             const newTicket = {
                 id: crypto.randomUUID(),
-                name: createData.name,
+                name,
                 status: false,
-                description: createData.description || "",
+                description,
                 created: Date.now(),
             };
             tickets.push(newTicket);
-            logger.info({ newTicket }, "createTicket");
-            return response.json(newTicket);
+            return res.json(newTicket);
         }
 
         case "deleteById": {
             const ticket = tickets.find((t) => t.id === id);
-            if (!ticket) return response.status(404).json({ message: "Ticket not found" });
+            if (!ticket) return res.status(404).json({ message: "Ticket not found" });
             tickets = tickets.filter((t) => t.id !== id);
-            logger.info({ id }, "deleteById");
-            return response.status(204).end();
+            return res.status(204).end();
         }
 
         case "updateById": {
             const ticket = tickets.find((t) => t.id === id);
-            if (!ticket) return response.status(404).json({ message: "Ticket not found" });
-            Object.assign(ticket, request.body);
-            logger.info({ id }, "updateById");
-            return response.json(tickets);
+            if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+            Object.assign(ticket, req.body);
+            return res.json(tickets);
         }
 
         default:
-            logger.warn({ method }, "Unknown method");
-            return response.status(400).json({ message: "Unknown method", method });
+            return res.status(400).json({ message: "Unknown method", method });
     }
+});
+
+app.use((err, req, res, next) => {
+    logger.error({ err }, "unhandled error");
+    res.status(500).json({ error: "Internal Server Error" });
 });
 
 const port = process.env.PORT || 7070;
