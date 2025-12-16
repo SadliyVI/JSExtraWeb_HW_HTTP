@@ -81,7 +81,6 @@ app.all("/", (req, res) => {
         }
 
         default:
-            // чтобы healthcheck на "/" не получал 404
             if (!method) return res.status(200).json({ status: "ok" });
             return res.status(400).json({ message: "Unknown method", method });
     }
@@ -92,13 +91,11 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    // eslint-disable-next-line no-console
     console.error("UNHANDLED ERROR:", err);
     res.status(500).json({ error: "Internal Server Error" });
 });
 
 const port = process.env.PORT || 7070;
 app.listen(port, () => {
-    // eslint-disable-next-line no-console
     console.log(`Server started on port ${port}`);
 });
